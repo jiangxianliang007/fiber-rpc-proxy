@@ -24,11 +24,11 @@ chmod 600 .env
 Set `FIBER_RPC_TOKEN=<raw Biscuit token>` in that file, without the Bearer prefix. Then run:
 
 ```sh
-docker compose up -d --force-recreate
-docker compose exec ckb-nginx-proxy nginx -t
+docker compose up -d --build
+docker compose exec fiber-rpc-proxy nginx -t
 ```
 
-Missing or malformed token configuration prevents NGINX startup. Fiber validates the signature, expiry and method permissions. Rotate the token by updating the local file and recreating the container. Environment variables are visible to privileged Docker operators. Do not enable debug logging or expose backend traffic to untrusted networks.
+Missing or malformed token configuration prevents NGINX startup. Fiber validates the signature, expiry and method permissions. Rotate the token by updating the local file and running `docker compose up -d --force-recreate`. Environment variables are visible to privileged Docker operators. Do not enable debug logging or expose backend traffic to untrusted networks.
 
 ## Restricted methods
 
