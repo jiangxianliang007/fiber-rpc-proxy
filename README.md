@@ -17,14 +17,22 @@ Grant other read permissions only if their data is intended to be public. Do not
 
 ```sh
 umask 077
-touch .env
+cp .env.example .env
 chmod 600 .env
 ```
 
-Set `FIBER_RPC_TOKEN=<raw Biscuit token>` in that file, without the Bearer prefix. Then run:
+Edit `.env` to set the published host port and raw Biscuit token (without the Bearer prefix):
+
+```dotenv
+FIBER_RPC_PORT=8117
+FIBER_RPC_TOKEN=your_biscuit_token
+```
+
+The container listens on port 80 internally; only the host port is configurable. Then run:
 
 ```sh
-docker compose up -d --build
+docker compose build --pull
+docker compose up -d
 docker compose exec fiber-rpc-proxy nginx -t
 ```
 
@@ -53,8 +61,10 @@ The denylist is not a complete authorization policy; the upstream token must enf
 
 ## Verify
 
+Replace `8117` with your configured host port. To refresh the upstream `latest` image, run `docker compose build --pull` followed by `docker compose up -d`.
+
 ```sh
-curl -sS http://127.0.0.1:80/ -H 'Content-Type: application/json' \
+curl -sS http://127.0.0.1:8117/ -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"node_info","params":[]}'
 ```
 
